@@ -19,6 +19,7 @@ optionsList = list(
   make_option(opt_str = c("-x","--plusxaxis"),type = "character",default = "0.1",help = "Extra \"space\" for the X axis on plot_tree (default: 0.1)"),
   make_option(opt_str = c("-t","--treemix"),type = "character",default = NULL,help = "Full path for the treemix binary (default: 'treemix' from the environment)"),
   make_option(opt_str = c("-f","--plotf"),type = "character",default = NULL,help = "Full path for the \"plotting_funcs.R\" script (default: [treemix_path]/plotting_funcs.R)"),
+  make_option(opt_str = c("-v","--vcf2treemix"),type = "logical",action = "store_true",default = F,help = "Just converts VCF to Treemix input and quit"),
   make_option(opt_str = c("-b","--bootstrap"),type = "logical",action = "store_true",default = F,help = "Generate one bootstrap (default: disabled)"),
   make_option(opt_str = c("-s","--stderror"),type = "logical",action = "store_true",default = F,help = "Calculate standard errors of migration weights (default: disabled)"),
   make_option(opt_str = c("-a","--assignment"),type = "character",default = NULL,help = "Needed only with the '-y vcf' option.\n\t\tA text file containing the names of the populations to which each of the samples belong,\n\t\tin the same order as they appear in the VCF columns"),
@@ -42,24 +43,27 @@ if(is.null(arguments$input)){
   print_help(opt)
   stop("Inform the path for Treemix input (should be a GZIP file)")
 }
-if(is.null(arguments$root)){
-  print_help(opt)
-  stop("Inform the name of the outgroup population")
+if(!arguments$vcf2treemix){
+  if(is.null(arguments$root)){
+    print_help(opt)
+    stop("Inform the name of the outgroup population")
+  }
+  if(is.null(arguments$migs)){
+    print_help(opt)
+    stop("Inform the maximum number of migrations")
+  }
+  if(is.null(arguments$poporder)){
+    print_help(opt)
+    stop("Inform the name of the poporder file")
+  }
+  if(is.null(arguments$treemix)){
+    arguments$treemix = Sys.readlink(Sys.which("treemix"))
+  }
+  if(is.null(arguments$plotf)){
+    arguments$plotf = paste(dirname(arguments$treemix),"plotting_funcs.R",sep = "/")
+  }  
 }
-if(is.null(arguments$migs)){
-  print_help(opt)
-  stop("Inform the maximum number of migrations")
-}
-if(is.null(arguments$poporder)){
-  print_help(opt)
-  stop("Inform the name of the poporder file")
-}
-if(is.null(arguments$treemix)){
-  arguments$treemix = Sys.readlink(Sys.which("treemix"))
-}
-if(is.null(arguments$plotf)){
-  arguments$plotf = paste(dirname(arguments$treemix),"plotting_funcs.R",sep = "/")
-}
+
 if(arguments$type == "vcf"){
   if(is.null(arguments$assignment)){
     print_help(opt)
@@ -100,6 +104,10 @@ if(arguments$type == "vcf"){
     write.table(x = matriz,file = newInputName,quote = F,row.names = F)
     R.utils::gzip(filename = newInputName,overwrite=T,remove=F)
     arguments$input = paste0(newInputName,".gz")
+    
+    if(arguments$vcf2treemix){
+      stop("Input VCF file converted to Treemix. Stoping..")
+    }
     
   }
 }else if(arguments$type == "treemix"){

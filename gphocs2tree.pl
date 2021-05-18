@@ -59,7 +59,7 @@ foreach my $tau (keys %taus){
 	my $inf = int(0.025*$tam);
 	my $sup = int(0.975*$tam);
 	
-	$ic95{$tau} = "[&IC95={$sorted[$inf],$sorted[$sup]}]";
+	$ic95{$tau} = "[&CI95={$sorted[$inf],$sorted[$sup]}]";
 }
 
 foreach my $media (keys %medias){
@@ -160,7 +160,7 @@ sub validateArgs {
 	close TRACE;
 	die "$usage\n ERROR: File $ARGV[1] does not seem to be a G-PhoCS trace file\n" if($firstLine !~ /^Sample/);
 	
-	die "$usage\n ERROR: root name $ARGV[2] not found inside G-PhoCS control file $ARGV[0]\n" if($ctrlText !~ /name\s+$ARGV[2]/);
+	die "$usage\n ERROR: root name '$ARGV[2]' not found inside G-PhoCS control file $ARGV[0]\n" if($ctrlText !~ /name\s+$ARGV[2]/);
 	
 	if($ARGV[3] =~ /^[\d\.\-eE]+$/){
 		my $num = $ARGV[3]*1;
