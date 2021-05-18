@@ -23,7 +23,7 @@ Most of runTreemix options are actually Treemix arguments passed directly to it,
 
 ## gphocs2tree.pl
 
-This is a very simple Perl script that generates a nexus tree with divergence times (and 95% cofidence intervals) from a G-PhoCS run. It takes the information about the phylogenetic relationship between populations from the G-PhoCS control file and tau estimates from the trace file.
+This is a very simple Perl script that generates a nexus tree with divergence times (and 95% confidence intervals) from a G-PhoCS run. It takes the information about the phylogenetic relationship between populations from the G-PhoCS control file and tau estimates from the trace file.
 
 Usage: `perl gphocs2tree.pl [G-PhoCS control file] [G-PhoCS trace file] [root name] [burn-in (decimal)] [output file]`
 
